@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "measured_at": "2026-07-28",
+  "produced_by": "web/python/readability.py",
+  "environment": {
+    "python": "3.9.25",
+    "pyarrow": "21.0.0",
+    "duckdb": "1.4.5"
+  },
+  "written_by": "pipeline.run_etl on the repo's own fixture, MOCK_MODE",
+  "object_path": "x-data/posts/year=2026/month=07/day=28/posts_20260728T232112Z.parquet",
+  "file_columns": [
+    "id",
+    "created_at",
+    "text",
+    "like_count",
+    "retweet_count",
+    "reply_count",
+    "quote_count",
+    "source",
+    "engagement_total",
+    "sentiment_score",
+    "sentiment_label",
+    "day"
+  ],
+  "partition_dirs": [
+    "year=2026",
+    "month=07",
+    "day=28"
+  ],
+  "colliding_names": [
+    "day"
+  ],
+  "probes": [
+    {
+      "reader": "pyarrow.parquet.ParquetFile",
+      "description": "One object, opened directly, with no partition discovery.",
+      "ok": true,
+      "detail": {
+        "rows": 5,
+        "day_column_type": "string",
+        "day_values": [
+          "2026-01-15",
+          "2026-01-15",
+          "2026-01-15"
+        ]
+      },
+      "error_type": null,
+      "error": null
+    },
+    {
+      "reader": "pyarrow.dataset hive",
+      "description": "The whole posts dataset, the way a partitioned table is normally read.",
+      "ok": false,
+      "detail": null,
+      "error_type": "ArrowTypeError",
+      "error": "Unable to merge: Field day has incompatible types: string vs int32"
+    },
+    {
+      "reader": "pyarrow.dataset no partitioning",
+      "description": "The same files with partition discovery switched off, which throws the partition values away.",
+      "ok": true,
+      "detail": {
+        "rows": 5
+      },
+      "error_type": null,
+      "error": null
+    },
+    {
+      "reader": "duckdb hive_partitioning",
+      "description": "An independent engine reading the same layout with partition keys on. It opens, which is the problem.",
+      "ok": true,
+      "detail": {
+        "rows": 5,
+        "columns": [
+          "id",
+          "created_at",
+          "text",
+          "like_count",
+          "retweet_count",
+          "reply_count",
+          "quote_count",
+          "source",
+          "engagement_total",
+          "sentiment_score",
+          "sentiment_label",
+          "day",
+          "month",
+          "year"
+        ],
+        "day_values": [
+          28
+        ],
+        "day_type": "BIGINT"
+      },
+      "error_type": null,
+      "error": null
+    },
+    {
+      "reader": "duckdb filter on the event date",
+      "description": "The query a reader would actually write against a column called day.",
+      "ok": false,
+      "detail": null,
+      "error_type": "ConversionException",
+      "error": "Conversion Error: Could not convert string '2026-01-15' to INT64 LINE 1: .../x-data/posts/**/*.parquet', (hive_partitioning = CAST('t' AS BOOLEAN))) WHERE (\"day\" = '2026-01-15') ^"
+    },
+    {
+      "reader": "duckdb hive_partitioning off",
+      "description": "The same engine ignoring the partition directories, which is the only way to see the real day column.",
+      "ok": true,
+      "detail": {
+        "rows": 5,
+        "day_values": [
+          "2026-01-15",
+          "2026-01-16"
+        ],
+        "day_type": "VARCHAR"
+      },
+      "error_type": null,
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "note": "Constants quoted on the page that are not measured from this repo. Each one names where it came from. gate 4 asserts every entry keeps a url and a date, and that nothing on the page quotes a sourced constant that is missing from this file.",
+  "references": {
+    "mysql_blob_bytes": {
+      "value": 65535,
+      "unit": "bytes",
+      "label": "MySQL BLOB column capacity",
+      "statement": "A BLOB column in MySQL holds a maximum of 65,535 bytes.",
+      "source": "MySQL 8.4 Reference Manual, String Type Storage Requirements",
+      "url": "https://dev.mysql.com/doc/refman/8.4/en/storage-requirements.html",
+      "checked": "2026-07-28",
+      "caveat": "Airflow's own documentation gives no numeric ceiling for an XCom value. It says XComs are for small amounts of data and that the default backend stores them in the metadata database, so what actually bounds the payload is that database's column. This figure is the MySQL case, not a statement about every deployment."
+    },
+    "airflow_xcom_guidance": {
+      "value": null,
+      "unit": null,
+      "label": "Airflow guidance on XCom size",
+      "statement": "XComs are only designed for small amounts of data; do not use them to pass around large values, like dataframes.",
+      "source": "Apache Airflow documentation, Core Concepts, XComs",
+      "url": "https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/xcoms.html",
+      "checked": "2026-07-28"
+    },
+    "x_api_recent_search_window_days": {
+      "value": 7,
+      "unit": "days",
+      "label": "Recent search lookback",
+      "statement": "The recent search endpoint returns Posts from the last seven days.",
+      "source": "X API v2 documentation, Recent search",
+      "url": "https://docs.x.com/x-api/posts/recent-search",
+      "checked": "2026-07-28"
+    },
+    "x_api_recent_search_max_results": {
+      "value": 100,
+      "unit": "results per request",
+      "label": "Recent search page size",
+      "statement": "max_results accepts a value between 10 and 100 per request, with pagination for more.",
+      "source": "X API v2 documentation, Recent search",
+      "url": "https://docs.x.com/x-api/posts/recent-search",
+      "checked": "2026-07-28"
+    }
+  }
+}
