@@ -1,0 +1,346 @@
+{
+  "version": 1,
+  "measured_at": "2026-07-28",
+  "produced_by": "web/python/tests_matrix.py",
+  "method": "For each mutation the repo is copied, the patch is applied, and each test is run on its own. A test that passes both before and after cannot distinguish the two behaviours.",
+  "tests": [
+    "test_extract_normalizes_schema",
+    "test_transform_adds_sentiment_and_engagement",
+    "test_daily_summary_groups_by_day",
+    "test_end_to_end_writes_parquet"
+  ],
+  "baseline_all_pass": true,
+  "rows": [
+    {
+      "id": "partition_on_event_date",
+      "title": "Partition on the post's own date instead of the run date",
+      "file": "pipeline/load.py",
+      "represents": "the headline fix for finding 4a",
+      "applied": true,
+      "results": {
+        "test_extract_normalizes_schema": true,
+        "test_transform_adds_sentiment_and_engagement": true,
+        "test_daily_summary_groups_by_day": true,
+        "test_end_to_end_writes_parquet": true
+      },
+      "failures": {},
+      "detected": false,
+      "changes_offline_output": true,
+      "observable": {
+        "baseline_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "mutated_posts_key": "x-data/posts/year=2026/month=01/day=15/posts_<TS>.parquet",
+        "baseline_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ],
+        "mutated_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ]
+      }
+    },
+    {
+      "id": "idempotent_object_key",
+      "title": "Key the object on the run instead of the wall clock",
+      "file": "pipeline/load.py",
+      "represents": "makes load idempotent, so a retry overwrites rather than duplicates",
+      "applied": true,
+      "results": {
+        "test_extract_normalizes_schema": true,
+        "test_transform_adds_sentiment_and_engagement": true,
+        "test_daily_summary_groups_by_day": true,
+        "test_end_to_end_writes_parquet": true
+      },
+      "failures": {},
+      "detected": false,
+      "changes_offline_output": true,
+      "observable": {
+        "baseline_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "mutated_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_run.parquet",
+        "baseline_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ],
+        "mutated_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ]
+      }
+    },
+    {
+      "id": "dedupe_on_id",
+      "title": "Drop duplicate post ids before writing",
+      "file": "pipeline/load.py",
+      "represents": "the merge key finding 4c says is missing",
+      "applied": true,
+      "results": {
+        "test_extract_normalizes_schema": true,
+        "test_transform_adds_sentiment_and_engagement": true,
+        "test_daily_summary_groups_by_day": true,
+        "test_end_to_end_writes_parquet": true
+      },
+      "failures": {},
+      "detected": false,
+      "changes_offline_output": false,
+      "observable": {
+        "baseline_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "mutated_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "baseline_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ],
+        "mutated_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ]
+      }
+    },
+    {
+      "id": "force_fallback_scorer",
+      "title": "Force the 28 word lexicon instead of VADER",
+      "file": "pipeline/transform.py",
+      "represents": "swaps between the two scorers the repo can run, finding 4d",
+      "applied": true,
+      "results": {
+        "test_extract_normalizes_schema": true,
+        "test_transform_adds_sentiment_and_engagement": true,
+        "test_daily_summary_groups_by_day": true,
+        "test_end_to_end_writes_parquet": true
+      },
+      "failures": {},
+      "detected": false,
+      "changes_offline_output": true,
+      "observable": {
+        "baseline_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "mutated_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "baseline_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ],
+        "mutated_scores": [
+          1.0,
+          -0.3333,
+          0.0,
+          0.6667,
+          0.0
+        ]
+      }
+    },
+    {
+      "id": "stem_the_lexicon",
+      "title": "Match lexicon words by prefix so delayed matches delay",
+      "file": "pipeline/transform.py",
+      "represents": "the stemming finding 4e",
+      "applied": true,
+      "results": {
+        "test_extract_normalizes_schema": true,
+        "test_transform_adds_sentiment_and_engagement": true,
+        "test_daily_summary_groups_by_day": true,
+        "test_end_to_end_writes_parquet": true
+      },
+      "failures": {},
+      "detected": false,
+      "changes_offline_output": false,
+      "observable": {
+        "baseline_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "mutated_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "baseline_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ],
+        "mutated_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ]
+      }
+    },
+    {
+      "id": "honour_max_results",
+      "title": "Stop silently clamping max_results to 100",
+      "file": "pipeline/extract.py",
+      "represents": "the silent truncation in finding 4f",
+      "applied": true,
+      "results": {
+        "test_extract_normalizes_schema": true,
+        "test_transform_adds_sentiment_and_engagement": true,
+        "test_daily_summary_groups_by_day": true,
+        "test_end_to_end_writes_parquet": true
+      },
+      "failures": {},
+      "detected": false,
+      "changes_offline_output": false,
+      "observable": {
+        "baseline_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "mutated_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "baseline_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ],
+        "mutated_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ]
+      }
+    },
+    {
+      "id": "xcom_passes_a_key",
+      "title": "Push a row count through XCom instead of the whole payload",
+      "file": "dags/x_data_pipeline.py",
+      "represents": "the XCom as a data bus antipattern, finding 4g",
+      "applied": true,
+      "results": {
+        "test_extract_normalizes_schema": true,
+        "test_transform_adds_sentiment_and_engagement": true,
+        "test_daily_summary_groups_by_day": true,
+        "test_end_to_end_writes_parquet": true
+      },
+      "failures": {},
+      "detected": false,
+      "changes_offline_output": false,
+      "observable": {
+        "baseline_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "mutated_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "baseline_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ],
+        "mutated_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ]
+      }
+    },
+    {
+      "id": "declare_an_explicit_schema",
+      "title": "Cast the columns before writing instead of inferring per batch",
+      "file": "pipeline/load.py",
+      "represents": "the schema drift finding 4h",
+      "applied": true,
+      "results": {
+        "test_extract_normalizes_schema": true,
+        "test_transform_adds_sentiment_and_engagement": true,
+        "test_daily_summary_groups_by_day": true,
+        "test_end_to_end_writes_parquet": true
+      },
+      "failures": {},
+      "detected": false,
+      "changes_offline_output": false,
+      "observable": {
+        "baseline_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "mutated_posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+        "baseline_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ],
+        "mutated_scores": [
+          0.9233,
+          -0.5574,
+          0.0,
+          0.807,
+          0.0
+        ]
+      }
+    }
+  ],
+  "baseline_probe": {
+    "posts_key": "x-data/posts/year=2026/month=07/day=28/posts_<TS>.parquet",
+    "scores": [
+      0.9233,
+      -0.5574,
+      0.0,
+      0.807,
+      0.0
+    ],
+    "labels": [
+      "positive",
+      "negative",
+      "neutral",
+      "positive",
+      "neutral"
+    ],
+    "rows": 5,
+    "schema": {
+      "id": "string",
+      "created_at": "string",
+      "text": "string",
+      "like_count": "int64",
+      "retweet_count": "int64",
+      "reply_count": "int64",
+      "quote_count": "int64",
+      "source": "string",
+      "engagement_total": "int64",
+      "sentiment_score": "double",
+      "sentiment_label": "string",
+      "day": "string"
+    },
+    "summary": [
+      {
+        "day": "2026-01-15",
+        "post_count": 3,
+        "total_engagement": 82038,
+        "avg_sentiment": 0.122,
+        "positive": 1,
+        "neutral": 1,
+        "negative": 1
+      },
+      {
+        "day": "2026-01-16",
+        "post_count": 2,
+        "total_engagement": 79698,
+        "avg_sentiment": 0.4035,
+        "positive": 1,
+        "neutral": 1,
+        "negative": 0
+      }
+    ]
+  },
+  "summary": {
+    "mutations": 8,
+    "detected": 0,
+    "undetected": 8,
+    "changed_output_but_undetected": 3,
+    "no_offline_effect": 5
+  }
+}

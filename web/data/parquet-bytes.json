@@ -1,0 +1,160 @@
+{
+  "version": 1,
+  "measured_at": "2026-07-28",
+  "produced_by": "web/python/measure_parquet.py",
+  "environment": {
+    "python": "3.9.25",
+    "pandas": "2.3.3",
+    "pyarrow": "21.0.0"
+  },
+  "scorer": "fallback lexicon, vaderSentiment import blocked",
+  "note": "Sizes are of files written by pipeline/load.py through pandas.to_parquet with its default compression, read back with pyarrow.parquet to confirm the row count survives.",
+  "posts": {
+    "points": [
+      {
+        "rows": 1,
+        "bytes": 7680
+      },
+      {
+        "rows": 2,
+        "bytes": 7887
+      },
+      {
+        "rows": 5,
+        "bytes": 8304
+      },
+      {
+        "rows": 10,
+        "bytes": 8540
+      },
+      {
+        "rows": 25,
+        "bytes": 9118
+      },
+      {
+        "rows": 50,
+        "bytes": 9861
+      },
+      {
+        "rows": 100,
+        "bytes": 11331
+      },
+      {
+        "rows": 250,
+        "bytes": 15128
+      },
+      {
+        "rows": 500,
+        "bytes": 20687
+      },
+      {
+        "rows": 1000,
+        "bytes": 32052
+      },
+      {
+        "rows": 2500,
+        "bytes": 68094
+      },
+      {
+        "rows": 5000,
+        "bytes": 128675
+      }
+    ],
+    "overhead_bytes": 8371.478,
+    "bytes_per_row": 24.0283
+  },
+  "daily_summary": {
+    "points": [
+      {
+        "rows": 1,
+        "bytes": 4591
+      },
+      {
+        "rows": 2,
+        "bytes": 4637
+      },
+      {
+        "rows": 5,
+        "bytes": 4688
+      },
+      {
+        "rows": 7,
+        "bytes": 4739
+      }
+    ],
+    "overhead_bytes": 4577.747,
+    "bytes_per_row": 22.9341
+  },
+  "schema_at_100_rows": {
+    "id": "string",
+    "created_at": "string",
+    "text": "string",
+    "like_count": "int64",
+    "retweet_count": "int64",
+    "reply_count": "int64",
+    "quote_count": "int64",
+    "source": "string",
+    "engagement_total": "int64",
+    "sentiment_score": "double",
+    "sentiment_label": "string",
+    "day": "string"
+  },
+  "schema_drift": {
+    "typical_batch": {
+      "id": "string",
+      "created_at": "string",
+      "text": "string",
+      "like_count": "int64",
+      "retweet_count": "int64",
+      "reply_count": "int64",
+      "quote_count": "int64",
+      "source": "string",
+      "engagement_total": "int64",
+      "sentiment_score": "double",
+      "sentiment_label": "string",
+      "day": "string"
+    },
+    "all_sources_absent": {
+      "id": "string",
+      "created_at": "string",
+      "text": "string",
+      "like_count": "int64",
+      "retweet_count": "int64",
+      "reply_count": "int64",
+      "quote_count": "int64",
+      "source": "null",
+      "engagement_total": "int64",
+      "sentiment_score": "double",
+      "sentiment_label": "string",
+      "day": "string"
+    },
+    "all_metrics_zero": {
+      "id": "string",
+      "created_at": "string",
+      "text": "string",
+      "like_count": "int64",
+      "retweet_count": "int64",
+      "reply_count": "int64",
+      "quote_count": "int64",
+      "source": "string",
+      "engagement_total": "int64",
+      "sentiment_score": "double",
+      "sentiment_label": "string",
+      "day": "string"
+    },
+    "one_missing_like_count": {
+      "id": "string",
+      "created_at": "string",
+      "text": "string",
+      "like_count": "double",
+      "retweet_count": "int64",
+      "reply_count": "int64",
+      "quote_count": "int64",
+      "source": "string",
+      "engagement_total": "int64",
+      "sentiment_score": "double",
+      "sentiment_label": "string",
+      "day": "string"
+    }
+  }
+}
