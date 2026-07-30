@@ -1,4 +1,50 @@
-# X Data Pipeline — Airflow + S3 (2026)
+# X Data Pipeline: Airflow + S3 (2026)
+
+**[Open the interactive showcase](https://x-data-pipeline.vercel.app)** and watch this pipeline run in your
+browser: a scheduler on its own clock, task instances changing state, XCom
+payloads carrying their real sizes, and Parquet objects landing in a partition
+tree. Ninety runs, ninety successes, and every post in the lake about seven
+times.
+
+[![Thirty daily runs of the DAG. Every task succeeds, XCom payloads move between tasks, and rows in the lake diverge from the number of distinct posts until every post is stored about seven times.](https://raw.githubusercontent.com/HarshMehta9000/x-data-pipeline-airflow-s3-2026/main/web/public/hero.gif)](https://x-data-pipeline.vercel.app)
+
+### The DAG is green and the data is wrong
+
+Six interactive elements, each running the repo's real logic rather than a mock
+of it. Four of them, as they appear on the page:
+
+**Two scorers, one column.** `transform._make_scorer` uses `vaderSentiment` when
+it imports and a 28 word lexicon when it does not. Both write to
+`sentiment_score`, and nothing records which one ran.
+
+[![The same post scored by both engines side by side. The fallback lexicon highlights the words it matched and strikes through the ones it missed, while VADER scores the same text differently.](https://raw.githubusercontent.com/HarshMehta9000/x-data-pipeline-airflow-s3-2026/main/web/public/sentiment.gif)](https://x-data-pipeline.vercel.app#sentiment)
+
+**What a retry costs.** `retries=2` on a `load` task whose object key carries a
+fresh timestamp. Turn failures up and the lake grows while the run states stay
+green.
+
+[![A Gantt of task instances as the failure probability rises from zero to 45 percent. Retries and failed attempts appear, the row count climbs, and runs keep reporting success.](https://raw.githubusercontent.com/HarshMehta9000/x-data-pipeline-airflow-s3-2026/main/web/public/retries.gif)](https://x-data-pipeline.vercel.app#scheduler)
+
+**Where the data actually lands.** The partition is keyed on the run date, so
+`year=/month=/day=` describes when the pipeline ran. Backfill ninety days and
+the whole archive collapses into one partition. Worse, `transform` writes a
+string column named `day` and `load` writes a directory named `day=`, so a
+partition aware reader sees the name twice with two types.
+
+[![Rows per partition under run date keying against event date keying. A backfill of ninety days collapses the entire archive into one partition of 1,080 rows, and the day column collision is shown with the exact reader errors.](https://raw.githubusercontent.com/HarshMehta9000/x-data-pipeline-airflow-s3-2026/main/web/public/partitions.gif)](https://x-data-pipeline.vercel.app#partitions)
+
+**Ninety days, and three switches that fix it.** Partition on the event date,
+make the load idempotent, add a watermark. Each one alone is not enough; all
+three together take the duplication factor to exactly 1.00x.
+
+[![Three switches turning on one at a time. The duplication factor falls from 6.77x to exactly 1.00x and the two lines converge.](https://raw.githubusercontent.com/HarshMehta9000/x-data-pipeline-airflow-s3-2026/main/web/public/levers.gif)](https://x-data-pipeline.vercel.app#lake)
+
+Everything on that page is computed, never typed in. `npm run verify` runs over
+68,000 assertions, including a corpus of 450 posts scored by both Python and the
+browser port; `npm run mutate` breaks sixteen load bearing things on purpose and
+checks that a named gate catches each one. See [web/README.md](web/README.md).
+
+---
 
 An Airflow ETL that ingests posts from **X (Twitter)** via the official
 **X API v2**, enriches them with **sentiment and engagement analytics**, and
@@ -9,8 +55,8 @@ then flip two environment variables to run it live.
 > **2026 update note.** The original version of this project used `snscrape`
 > to scrape `@elonmusk`'s timeline and wrote a flat local CSV. Free scraping of
 > X stopped working in 2023, so the source has been migrated to the supported
-> X API v2 (via Tweepy). The "S3" in the title — which the original never
-> actually implemented — is now real.
+> X API v2 (via Tweepy). The "S3" in the title, which the original never
+> actually implemented, is now real.
 >
 > **Why X and not LinkedIn?** LinkedIn has no public API for searching or
 > reading posts, and scraping it violates their Terms of Service. There is no
@@ -66,7 +112,7 @@ that passes data between tasks via XCom.
 └── requirements.txt
 ```
 
-## Quickstart (offline — no credentials needed)
+## Quickstart (offline, no credentials needed)
 
 ```bash
 pip install pandas pyarrow pytest vaderSentiment

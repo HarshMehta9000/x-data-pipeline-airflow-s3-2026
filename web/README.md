@@ -3,9 +3,14 @@
 An interactive page that runs this repository's pipeline in the browser and
 shows what ninety days of successful runs actually write to the lake.
 
-<!-- LIVE_LINK: filled in on deploy -->
+**Live: https://x-data-pipeline.vercel.app**
 
 ![Thirty daily runs of the DAG. Every task succeeds, the partition tree fills, and rows in the lake diverge from the number of distinct posts until every post is stored about seven times.](public/hero.gif)
+
+| | |
+| --- | --- |
+| ![Both sentiment scorers on the same post.](public/sentiment.gif) | ![Task instances, retries and what they cost.](public/retries.gif) |
+| ![Partition layouts and the backfill collapse.](public/partitions.gif) | ![Three switches taking duplication to 1.00x.](public/levers.gif) |
 
 ## What it is
 
